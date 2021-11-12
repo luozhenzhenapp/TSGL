@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.book.mapper.BookMapper">
+    
+    <resultMap type="Book" id="BookResult">
+        <result property="id"    column="id"    />
+        <result property="bookName"    column="book_name"    />
+        <result property="bookAuthor"    column="book_author"    />
+        <result property="bookPub"    column="book_pub"    />
+        <result property="bookNum"    column="book_num"    />
+        <result property="bookTypeId"    column="book_type_id"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBookVo">
+        select id, book_name, book_author, book_pub, book_num, book_type_id, create_time, create_by, update_by, update_time from book
+    </sql>
+
+    <select id="selectBookList" parameterType="Book" resultMap="BookResult">
+        <include refid="selectBookVo"/>
+        <where>  
+            <if test="bookName != null  and bookName != ''"> and book_name like concat('%', #{bookName}, '%')</if>
+            <if test="bookAuthor != null  and bookAuthor != ''"> and book_author = #{bookAuthor}</if>
+            <if test="bookPub != null  and bookPub != ''"> and book_pub = #{bookPub}</if>
+            <if test="bookNum != null "> and book_num = #{bookNum}</if>
+            <if test="bookTypeId != null  and bookTypeId != ''"> and book_type_id = #{bookTypeId}</if>
+        </where>
+    </select>
+    
+    <select id="selectBookById" parameterType="Long" resultMap="BookResult">
+        <include refid="selectBookVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertBook" parameterType="Book" useGeneratedKeys="true" keyProperty="id">
+        insert into book
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">book_name,</if>
+            <if test="bookAuthor != null and bookAuthor != ''">book_author,</if>
+            <if test="bookPub != null and bookPub != ''">book_pub,</if>
+            <if test="bookNum != null">book_num,</if>
+            <if test="bookTypeId != null and bookTypeId != ''">book_type_id,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">#{bookName},</if>
+            <if test="bookAuthor != null and bookAuthor != ''">#{bookAuthor},</if>
+            <if test="bookPub != null and bookPub != ''">#{bookPub},</if>
+            <if test="bookNum != null">#{bookNum},</if>
+            <if test="bookTypeId != null and bookTypeId != ''">#{bookTypeId},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBook" parameterType="Book">
+        update book
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookName != null and bookName != ''">book_name = #{bookName},</if>
+            <if test="bookAuthor != null and bookAuthor != ''">book_author = #{bookAuthor},</if>
+            <if test="bookPub != null and bookPub != ''">book_pub = #{bookPub},</if>
+            <if test="bookNum != null">book_num = #{bookNum},</if>
+            <if test="bookTypeId != null and bookTypeId != ''">book_type_id = #{bookTypeId},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteBookById" parameterType="Long">
+        delete from book where id = #{id}
+    </delete>
+
+    <delete id="deleteBookByIds" parameterType="String">
+        delete from book where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.ticket.mapper.TicketMapper">
+    
+    <resultMap type="Ticket" id="TicketResult">
+        <result property="id"    column="id"    />
+        <result property="userId"    column="user_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="overDate"    column="over_date"    />
+        <result property="ticketFee"    column="ticket_fee"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectTicketVo">
+        select id, user_id, book_id, over_date, ticket_fee, create_time, create_by, update_by, update_time from ticket
+    </sql>
+
+    <select id="selectTicketList" parameterType="Ticket" resultMap="TicketResult">
+        <include refid="selectTicketVo"/>
+        <where>  
+            <if test="userId != null "> and user_id = #{userId}</if>
+            <if test="bookId != null "> and book_id = #{bookId}</if>
+            <if test="overDate != null "> and over_date = #{overDate}</if>
+            <if test="ticketFee != null "> and ticket_fee = #{ticketFee}</if>
+        </where>
+    </select>
+    
+    <select id="selectTicketById" parameterType="Long" resultMap="TicketResult">
+        <include refid="selectTicketVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTicket" parameterType="Ticket" useGeneratedKeys="true" keyProperty="id">
+        insert into ticket
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="bookId != null">book_id,</if>
+            <if test="overDate != null">over_date,</if>
+            <if test="ticketFee != null">ticket_fee,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="bookId != null">#{bookId},</if>
+            <if test="overDate != null">#{overDate},</if>
+            <if test="ticketFee != null">#{ticketFee},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTicket" parameterType="Ticket">
+        update ticket
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="overDate != null">over_date = #{overDate},</if>
+            <if test="ticketFee != null">ticket_fee = #{ticketFee},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTicketById" parameterType="Long">
+        delete from ticket where id = #{id}
+    </delete>
+
+    <delete id="deleteTicketByIds" parameterType="String">
+        delete from ticket where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+</mapper>

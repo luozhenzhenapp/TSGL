@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.system.borrw.mapper.BorrwMapper">
+    
+    <resultMap type="Borrw" id="BorrwResult">
+        <result property="userId"    column="user_id"    />
+        <result property="bookId"    column="book_id"    />
+        <result property="expectedRetur"    column="expected_retur"    />
+        <result property="actualReturn"    column="actual_return"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectBorrwVo">
+        select user_id, book_id, expected_retur, actual_return, create_time, create_by, update_by, update_time from borrw
+    </sql>
+
+    <select id="selectBorrwList" parameterType="Borrw" resultMap="BorrwResult">
+        <include refid="selectBorrwVo"/>
+        <where>  
+            <if test="expectedRetur != null "> and expected_retur = #{expectedRetur}</if>
+            <if test="actualReturn != null "> and actual_return = #{actualReturn}</if>
+        </where>
+    </select>
+    
+    <select id="selectBorrwByUserId" parameterType="Long" resultMap="BorrwResult">
+        <include refid="selectBorrwVo"/>
+        where user_id = #{userId}
+    </select>
+        
+    <insert id="insertBorrw" parameterType="Borrw">
+        insert into borrw
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="userId != null">user_id,</if>
+            <if test="bookId != null">book_id,</if>
+            <if test="expectedRetur != null">expected_retur,</if>
+            <if test="actualReturn != null">actual_return,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="userId != null">#{userId},</if>
+            <if test="bookId != null">#{bookId},</if>
+            <if test="expectedRetur != null">#{expectedRetur},</if>
+            <if test="actualReturn != null">#{actualReturn},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBorrw" parameterType="Borrw">
+        update borrw
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="bookId != null">book_id = #{bookId},</if>
+            <if test="expectedRetur != null">expected_retur = #{expectedRetur},</if>
+            <if test="actualReturn != null">actual_return = #{actualReturn},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where user_id = #{userId}
+    </update>
+
+    <delete id="deleteBorrwByUserId" parameterType="Long">
+        delete from borrw where user_id = #{userId}
+    </delete>
+
+    <delete id="deleteBorrwByUserIds" parameterType="String">
+        delete from borrw where user_id in 
+        <foreach item="userId" collection="array" open="(" separator="," close=")">
+            #{userId}
+        </foreach>
+    </delete>
+
+</mapper>
